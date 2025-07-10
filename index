@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <!-- saved from url=(0106)file:///C:/Users/quanh/Downloads/T%C3%ADnh%20%C4%90i%E1%BB%83m%20T%E1%BB%95ng%20K%E1%BA%BFt%20&%20GPA.html -->
-<html lang="vi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
+<html lang="vi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
   <title>Tính Điểm Tổng Kết &amp; GPA</title>
   <script src="./Tính Điểm Tổng Kết &amp; GPA 2_files/xlsx.full.min.js.download"></script>
   <style>
@@ -23,10 +22,8 @@
   </style>
 </head>
 <body>
-
   <h1>Tính điểm GPA</h1>
   <input type="file" id="fileInput" accept=".xlsx,.xls">
-
   <div id="select-container" class="show">
     <label>Tìm kiếm học phần:</label>
     <input type="text" id="search-input" placeholder="Nhập mã hoặc tên học phần">
@@ -66,12 +63,9 @@
     </div>
     <button id="add-course-btn">Thêm Môn Học</button>
   </div>
-
 <script>
 let courses = [], filtered = [], selectedCodes = [];
 let isAdding = false;
-
-// Đọc file Excel
 function readExcel(file) {
   const reader = new FileReader();
   reader.onload = e => {
@@ -86,9 +80,7 @@ function readExcel(file) {
   };
   reader.readAsBinaryString(file);
 }
-
-// Hiển thị danh sách checkbox
-function populateCourseList(list) {
+function populateCourseList(list) { //check hp
   const container = document.getElementById("course-list");
   container.innerHTML = "";
   list.forEach(c => {
@@ -103,9 +95,7 @@ function populateCourseList(list) {
     container.appendChild(div);
   });
 }
-
-// Ánh xạ điểm tổng kết sang chữ và hệ 4.0
-function mapLetterAnd4(ptk) {
+function mapLetterAnd4(ptk) //quy doi diem {
   if (ptk >= 9.5) return { l: "A+", v: 4.0 };
   if (ptk >= 8.5) return { l: "A",  v: 4.0 };
   if (ptk >= 8.0) return { l: "B+", v: 3.5 };
@@ -116,8 +106,6 @@ function mapLetterAnd4(ptk) {
   if (ptk >= 4.0) return { l: "D",  v: 1.0 };
   return { l: "F", v: 0 };
 }
-
-// Tạo hàng nhập điểm cho mỗi học phần
 function addGradeRows(codes) {
   const tbody = document.querySelector("#grade-table tbody");
   codes.forEach(code => {
@@ -139,13 +127,11 @@ function addGradeRows(codes) {
   });
 }
 
-// Sự kiện bấm chọn file
 document.getElementById("fileInput")
   .addEventListener("change", e => {
     if (e.target.files.length) readExcel(e.target.files[0]);
   });
 
-// Filter khi gõ tìm kiếm
 document.getElementById("search-input")
   .addEventListener("input", function() {
     const t = this.value.toLowerCase();
@@ -156,7 +142,6 @@ document.getElementById("search-input")
     populateCourseList(filtered);
   });
 
-// Xác nhận chọn (cho cả lần đầu & thêm môn)
 document.getElementById("choose-btn").onclick = () => {
   const checked = Array.from(
     document.querySelectorAll(".course-checkbox:checked")
@@ -167,32 +152,23 @@ document.getElementById("choose-btn").onclick = () => {
     return;
   }
   err.textContent = "";
-  // cập nhật selectedCodes
   selectedCodes = selectedCodes.concat(checked);
-  // nếu lần đầu, show form nhập
   if (!isAdding) {
     addGradeRows(selectedCodes);
     document.getElementById("grade-form").classList.remove("hidden");
   } else {
-    // nếu đang thêm môn, chỉ append rows mới
     addGradeRows(checked);
   }
-  // đóng chọn môn
   isAdding = false;
   document.getElementById("select-container").classList.add("hidden");
 };
-
-// Nút Thêm Môn Học (sau khi đã tính hoặc không)
 document.getElementById("add-course-btn").onclick = () => {
   isAdding = true;
-  // reset search + danh sách
   document.getElementById("search-input").value = "";
   filtered = [...courses];
   populateCourseList(filtered);
   document.getElementById("select-container").classList.remove("hidden");
 };
-
-// Tính điểm & hiển thị kết quả
 document.getElementById("calc-btn").onclick = e => {
   e.preventDefault();
   const rows = document.querySelectorAll("#grade-table tbody tr");
@@ -223,7 +199,6 @@ document.getElementById("calc-btn").onclick = e => {
     sumCr  += +c.credits;
   });
 
-  // render kết quả
   const tbody = document.querySelector("#result-table tbody");
   tbody.innerHTML = "";
   results.forEach(r => {
@@ -238,7 +213,6 @@ document.getElementById("calc-btn").onclick = e => {
     `;
     tbody.appendChild(tr);
   });
-  // tính GPA
   if (results.length) {
     const gpa = sumPts / sumCr;
     const gl  = mapLetterAnd4(gpa).l;
